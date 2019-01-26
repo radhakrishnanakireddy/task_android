@@ -1,5 +1,3 @@
-# android_task
-
 # Android Task
 
 
@@ -28,11 +26,11 @@
 * Start Android Device emulator
     *	In my case I am using “Genymotion”
 * Open cmd and execute below command to install require gems
-   * Goto Project root folder
+   * Goto Project root folder (task_android)
    * Execute *"bundle install"* command
 * Start Appium with below cmd
    * *cmd =>  appium*
-* Goto tech folder – (note: user should trigger test execution from root folder)
+* Goto task_android folder – (note: user should trigger test execution from root folder)
 * Open cmd and execute below command to trigger Test execution
     *  *rake test:android*
 *	*Test Reports*
