@@ -1,0 +1,1 @@
+android: --tags @items_verification --format json --out report_android/report.json environment=android

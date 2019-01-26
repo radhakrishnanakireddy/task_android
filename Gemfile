@@ -1,0 +1,11 @@
+source 'https://rubygems.org'
+
+gem 'cucumber'
+gem 'appium_lib'
+gem 'pry'
+gem 'nokogiri','1.9.1'
+gem 'require_all'
+gem 'report_builder'
+gem 'json'
+gem 'data_magic'
+gem 'rspec'
