@@ -9,6 +9,7 @@ class HomeScreen
 					  :delivery_items_group => {:class => 'androidx.recyclerview.widget.RecyclerView'},
 					  :delivery_items => {:class => 'android.view.ViewGroup'},
 					  :load_icon => {:class =>'android.widget.RelativeLayout'},
+					  :progress_bar => {:class => 'android.widget.ProgressBar'},
 					  :pull_down_refresher => {:class => 'android.widget.LinearLayout'},
 					  :deliver_details_title => {:text => 'Delivery Detail'},
 					  :map_view => {:id => 'mapView', :class => 'android.widget.FrameLayout'},
@@ -26,39 +27,22 @@ class HomeScreen
 	end
 
 
-	def infinity_scroll(items_count_per_load = 10)
+	def infinity_scroll(count = 10)		
 		top = find_element(@element[:delivery_items_group]).find_elements(@element[:delivery_items]).first.location
 		bottom = find_element(@element[:delivery_items_group]).find_elements(@element[:delivery_items]).last.location
 		touch = Appium::TouchAction.new
-		100.times do  
-			begin
-				retries ||= 0
-				touch.swipe(start_x: bottom[:x], start_y: bottom[:y], end_x: top[:x], end_y: top[:y], duration:600).perform
-				sleep(6)
-				if find_element(@element[:delivery_items_group]).find_elements(@element[:delivery_items]).size < items_count_per_load
-					if find_element(@element[:delivery_items_group]).find_element(@element[:load_icon]).displayed?
-						raise("retry")						
-					end
+		counts = 0
+		100.times do  			
+			touch.swipe(start_x: bottom[:x], start_y: bottom[:y], end_x: top[:x], end_y: top[:y], duration:600).perform
+			sleep(6)			
+			counts = find_element(@element[:delivery_items_group]).find_elements(@element[:delivery_items]).size
+			if find_element(@element[:delivery_items_group]).find_elements(@element[:delivery_items]).size <= 10
+				if find_element(@element[:delivery_items_group]).find_element(@element[:load_icon]).displayed?
+					raise("Delivery list items are not getting loaded")						
 				end
-			rescue
-				retry if (retries += 1) < 3
-				raise("Delivery list items are not getting loaded")
-				break
-			end
+			end	
 		end
-	end
-
-	def scroll(items_count_per_load = 10)
-		items = 0
-		top = find_element(@element[:delivery_items_group]).find_elements(@element[:delivery_items]).first.location
-		bottom = find_element(@element[:delivery_items_group]).find_elements(@element[:delivery_items]).last.location
-		touch = Appium::TouchAction.new
-		touch.swipe(start_x: bottom[:x], start_y: bottom[:y], end_x: top[:x], end_y: top[:y], duration:600).perform
-		wait(timeout: 25, interval:0.0){find_element(@element[:delivery_items_group]).find_elements(@element[:delivery_items])}
-		if find_element(@element[:delivery_items_group]).find_elements(@element[:delivery_items]).size < items_count_per_load
-			raise("Delivery list items are not getting loaded")
-		end
-		items
+		counts				
 	end
 
 	def delete_an_item(index)

@@ -20,7 +20,8 @@ Then("I scroll down the screen infinity times to see delivery list items") do
 end
 
 Then("I scroll down the screen and I should should see {string} or more items per each load") do |items_count|
-  @screen.infinity_scroll(items_count.to_i)
+  items_count = @screen.infinity_scroll(items_count.to_i)
+  expect(items_count).to be >= items_count
 end
 
 

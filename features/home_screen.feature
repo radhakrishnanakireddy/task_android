@@ -15,7 +15,6 @@ Feature: Tests for Home screen functionality
   	Then I scroll down the screen infinity times to see delivery list items
 
 
-
   Scenario: Verify Items count per load on Delivery List screen
   	Given I Land on Home screen
   	Then I scroll down the screen and I should should see "10" or more items per each load 
