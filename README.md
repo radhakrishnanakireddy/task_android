@@ -1,6 +1,7 @@
 # Android Task
 
 
+### Tested on Nexus 6 and Samsung Galaxy 7 with display dimensions - (1440x2960, 640dpi) and Android 8.0
 
 ## Windows Environment Setup
  * [Install NodeJs](https://nodejs.org/en/)
