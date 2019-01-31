@@ -30,7 +30,7 @@ at_exit do
         config.compress_images = true
         time = Time.new
         config.additional_info = { Date: "#{time.strftime("%D Time: %H:%M:%S")}",
-                       Platform: "Android 8.1(Nexus 6)",
+                       Platform: "Android 8.0(Nexus 6)",
                        Display_dimensions: '1440x2960, 640dpi',
                        Environment: "app-tech-android-challenge-20180918.apk"
                        }
