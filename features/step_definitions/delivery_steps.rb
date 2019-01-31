@@ -1,9 +1,7 @@
 
 Given(/^I Land on Home screen$/) do
-   @screen = on(HomeScreen) 
-   # note :  added more explicit wait for safer side
-   expect(wait_true(timeout: 25, interval:0.0){ text(@screen.element[:homescreen_title][:text]).enabled?}).to be_truthy, "Error : Header Bar is  not displayed"
-   @header_text = text(@screen.element[:homescreen_title][:text]).text
+   expect(wait_true(timeout: 25, interval:0.0){ text(delivery_list_page.element[:homescreen_title][:text]).enabled?}).to be_truthy, "Error : Header Bar is  not displayed"
+   @header_text = text(delivery_list_page.element[:homescreen_title][:text]).text
 end
 
 
@@ -12,22 +10,24 @@ Then("I Should see{string} title Home screen") do |title|
 end
 
 Then("I See Delivery Items on Home") do
-  expect(find_element(@screen.element[:delivery_items_group]).find_elements(@screen.element[:delivery_items]).size).to be > 0, "Error : Delivery Items are not displayed"  
+  expect(delivery_list_page.get_items_size).to be > 0, "Error : Delivery Items are not displayed"  
 end
 
 Then("I scroll down the screen infinity times to see delivery list items") do
-  @screen.infinity_scroll
+  delivery_list_page.infinity_scroll
 end
 
 Then("I scroll down the screen and I should should see {string} or more items per each load") do |items_count|
-  items_count = @screen.infinity_scroll(items_count.to_i)
-  expect(items_count).to be >= items_count
+  expect(delivery_list_page.get_items_size).to be >= items_count.to_i
 end
 
 
 Then("I tap on a Delivery List item") do
-  @deliver_list_screen_info =  @screen.item_info(3)
-  @delivery_details =  @screen.top_on_item_to_getinfo(3)
+  item ||= begin
+    rand(0..delivery_list_page.get_items_size-1)
+  end
+  @deliver_list_screen_info =  delivery_details_page.item_info(item)
+  @delivery_details =  delivery_details_page.top_on_item_to_getinfo(item)
 end
 
 
@@ -44,9 +44,12 @@ end
 
 
 Then("I Delete an item from Delivery list by long press") do
-  @screen.delete_an_item(1)
-  @screen.check_crash_alert
-  expect(@screen.check_crash_alert).to be_falsey, "Error : App got crashed while deleting an item from delivery list"
+  item ||= begin
+    rand(0..delivery_list_page.get_items_size-1)
+  end
+  delivery_list_page.delete_an_item(item)
+  delivery_list_page.check_crash_alert
+  expect(delivery_list_page.check_crash_alert).to be_falsey, "Error : App got crashed while deleting an item from delivery list"
 end
 
 
