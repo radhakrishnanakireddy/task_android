@@ -3,8 +3,8 @@ Before do
 end
 
 After do |scenario|
-  if !File.directory?("screnshots")
-    FileUtils.mkdir_p("screnshots")
+  if !File.directory?("screenshots")
+    FileUtils.mkdir_p("screenshots")
   end
   time_stamp = Time.now.strftime("%Y-%m-%d_%H.%M.%S")
   screenshot_name = time_stamp + ".png"
