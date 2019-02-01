@@ -14,14 +14,15 @@ class DeliveryDetailsPage
 					  :address => {:id => 'textView_address', :class => 'android.widget.TextView'}, 
 					  :customer_image_icon => {:id => 'simpleDraweeView', :class => 'android.widget.ImageView'},
 					  :customer_description => {:id => 'textView_description'},
-					  :customer_address => {:id => 'textView_address'},
+					  :customer_address => {:id => 'textView_address'}
+
 					}
 	end
 
 
 	def item_info(index)
 		info = {}
-		wait(timeout: 30, interval:0.0){find_element(element[:delivery_items_group]).find_elements(element[:customer_description])[index].displayed?}
+		wait(timeout: 20, interval:0.0){find_element(element[:delivery_items_group]).find_elements(element[:customer_description])[index].displayed?}
 		info[:customer_description] = find_element(element[:delivery_items_group]).find_elements(element[:customer_description])[index].text
 		info[:customer_address] = find_element(element[:delivery_items_group]).find_elements(element[:customer_address])[index].text
 		info

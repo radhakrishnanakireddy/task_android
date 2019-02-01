@@ -1,4 +1,8 @@
 
+Given("I Check TechChallange apk is installed on mobile") do
+  expect(app_installed?(Config.caps[:caps][:appPackage])).to be_truthy, 'Error : TechChallange apk is not installed on device'
+end
+
 Given(/^I Land on Home screen$/) do
    expect(wait_true(timeout: 25, interval:0.0){ text(delivery_list_page.element[:homescreen_title][:text]).enabled?}).to be_truthy, "Error : Header Bar is  not displayed"
    @header_text = text(delivery_list_page.element[:homescreen_title][:text]).text
@@ -24,7 +28,7 @@ end
 
 Then("I tap on a Delivery List item") do
   item ||= begin
-    rand(0..delivery_list_page.get_items_size-1)
+    rand(0..delivery_list_page.get_items_size-2)
   end
   @deliver_list_screen_info =  delivery_details_page.item_info(item)
   @delivery_details =  delivery_details_page.top_on_item_to_getinfo(item)
@@ -45,18 +49,44 @@ end
 
 Then("I Delete an item from Delivery list by long press") do
   item ||= begin
-    rand(0..delivery_list_page.get_items_size-1)
+    rand(0..delivery_list_page.get_items_size-2)
   end
   delivery_list_page.delete_an_item(item)
-  delivery_list_page.check_crash_alert
-  expect(delivery_list_page.check_crash_alert).to be_falsey, "Error : App got crashed while deleting an item from delivery list"
+  expect(common_page_herlpers.check_crash_alert).to be_falsey, "Error : App got crashed while deleting an item from delivery list"
 end
 
 
+Then("I Should not see items which does not have Item name, location, profile on Delivery List page") do
+  expect(delivery_list_page.verify_items).to be_truthy, "Error : Delivery item data is missing from page"
+end
 
 
+Then("I tap on Navtive Back navigation button") do
+  back
+end
+
+Then("I should get navigated {string} page") do |string|
+  expect(common_page_herlpers.text_visible?("Delivery List")).to be_truthy, "Error : Not able to navigate to Delivery list page using Native back navigation"
+end
 
 
+Then("I tap on Back navigation arrow") do
+  common_page_herlpers.back_arrow
+end
 
+Then("I send app to background for {string} seconds") do |seconds|
+  background_app(seconds.to_i)
+end
 
+Then("I should see delivery list page") do
+  expect(delivery_list_page.get_items_size).to be > 0, "Error : Items are not getting loaded after getting back from background app sleep"
+end
+
+Then("I send app to background for {string} seconds on delivery details page") do |seconds|
+  background_app(seconds.to_i)
+end
+
+Then("I should see {string} page") do |page|
+   expect(common_page_herlpers.text_visible?(page)).to be_truthy, 'Error : Delivery Details Page is not loaded after getting back app from background time'
+end
 

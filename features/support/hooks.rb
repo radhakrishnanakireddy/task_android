@@ -3,15 +3,19 @@ Before do
 end
 
 After do |scenario|
-  if !File.directory?("screenshots")
-    FileUtils.mkdir_p("screenshots")
+  begin
+    if !File.directory?("screenshots")
+      FileUtils.mkdir_p("screenshots")
+    end
+    time_stamp = Time.now.strftime("%Y-%m-%d_%H.%M.%S")
+    screenshot_name = time_stamp + ".png"
+    screenshot_file = File.join("screenshots", screenshot_name)
+    $driver.screenshot(screenshot_file)
+    embed("#{screenshot_file}", "image/png")
+    $driver.driver_quit
+  rescue Exception => e
+    raise "Not able save sceenshot due to page load error"
   end
-  time_stamp = Time.now.strftime("%Y-%m-%d_%H.%M.%S")
-  screenshot_name = time_stamp + ".png"
-  screenshot_file = File.join("screenshots", screenshot_name)
-  $driver.screenshot(screenshot_file)
-  embed("#{screenshot_file}", "image/png")
-  $driver.driver_quit
 end
 
 AfterConfiguration do
@@ -30,11 +34,11 @@ at_exit do
         config.compress_images = true
         time = Time.new
         config.additional_info = { Date: "#{time.strftime("%D Time: %H:%M:%S")}",
-                       Platform: "Android 8.0(Nexus 6)",
+                       Platform: Config.fetch_device_name[1],
                        Display_dimensions: '1440x2960, 640dpi',
                        Environment: "app-tech-android-challenge-20180918.apk"
                        }
     end
-        ReportBuilder.build_report
-
+    
+    ReportBuilder.build_report
 end

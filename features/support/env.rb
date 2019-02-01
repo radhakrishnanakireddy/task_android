@@ -5,7 +5,7 @@ require "pry"
 require 'rspec'
 require 'rspec/expectations'
 require 'data_magic'
-
+require 'open3'
 
 
 require_all File.dirname(__FILE__) + "/helpers"
@@ -16,14 +16,12 @@ require_rel 'pages'
 
 include Config
 include PageObjects
+ 
 
-
-Appium::Driver.new(Config.caps, true)
+$appium = Appium::Driver.new(Config.caps, true)
 Appium.promote_appium_methods Object 
 
 
 
 
-
- 
 

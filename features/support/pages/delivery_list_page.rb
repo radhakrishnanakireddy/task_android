@@ -14,10 +14,7 @@ class DeliveryListPage
 					  :deliver_details_title => {:text => 'Delivery Detail'},
 					  :customer_image_icon => {:id => 'simpleDraweeView', :class => 'android.widget.ImageView'},
 					  :customer_description => {:id => 'textView_description'},
-					  :alter_title => {:id => 'alertTitle'},
-					  :app_error_message => {:text => 'TechChallenge has stopped'},
-					  :app_restart => {:id => 'aerr_restart'}
-
+					  :customer_address => {:id => 'textView_address'}
 					}
 	end
 
@@ -43,10 +40,18 @@ class DeliveryListPage
 						end
 					end	
 			rescue Exception => e			
-				retry if (retries += 1) < 6
+				retry if (retries += 1) < 7
 				raise("Delivery list items are not getting loaded")								
 			end
 		end
+	end
+
+
+	def scroll
+		top = find_element(element[:delivery_items_group]).find_elements(element[:delivery_items]).first.location
+		bottom = find_element(element[:delivery_items_group]).find_elements(element[:delivery_items]).last.location
+		touch = Appium::TouchAction.new
+		touch.swipe(start_x: bottom[:x], start_y: bottom[:y], end_x: top[:x], end_y: top[:y], duration:600).perform
 	end
 		
 	def delete_an_item(index)
@@ -54,11 +59,24 @@ class DeliveryListPage
   		Appium::TouchAction.new.long_press(x: item[:x], y: item[:y]).perform
 	end
 
-	def check_crash_alert
-		flag = false
-			if wait_true(timeout: 15, interval:0.0){text(element[:app_error_message][:text]).displayed?}
-				flag = true
+	def verify_items		
+		begin
+			result = {}
+			flag = true
+			if wait_true(timeout: 15, interval: 0.0){find_element(element[:delivery_items_group]).find_elements(element[:delivery_items]).size > 0}
+				items = find_element(element[:delivery_items_group]).find_elements(element[:delivery_items])
+				(0..items.size-2).each do |i|
+					wait(timeout: 2, interval: 0.0){items[i].find_element(element[:customer_description]).text}
+					flag = false if items[i].find_element(element[:customer_description]).text.empty?
+					flag = false if items[i].find_element(element[:customer_address]).text.empty?
+					flag = false if !items[i].find_element(element[:customer_image_icon]).displayed?
+					result['flag'] = flag
+					result['index'] = i
+				end
 			end
-		flag
+			result['flag']
+		rescue Exception => e
+			raise("Items are not loaded #{e} at item = #{result['index']+1}")
+		end
 	end
 end
